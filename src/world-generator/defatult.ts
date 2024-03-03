@@ -1,7 +1,7 @@
 import { v4 as uuidV4 } from "uuid"
 
 import IWorldGenerator, { IWorldData, IWorldGeneratorGenerateMethodOptions } from "./inferface"
-import IChunkGenerator from "../chunk-generator/interface"
+import IChunkGenerator, { ChunkSize } from "../chunk-generator/interface"
 import { WorldGernerationStages } from "../enums"
 import { IPRNG } from "../prng"
 
@@ -11,16 +11,21 @@ export type WorldGeneratorOptions = {
 
 export type WorldGeneratorGenerateMethodOptions = IWorldGeneratorGenerateMethodOptions & {}
 
-class WorldGenerator extends IWorldGenerator {
-    public generate({
-        seed,
-        length,
-        chunkSize,
-        prngClass
-    }: WorldGeneratorGenerateMethodOptions): IWorldData {
-        const prng = (new prngClass(seed)) as IPRNG
+export type WorldGeneratorGenerateBlocksMethodOptions = {
+    prng: IPRNG
+    length: number,
+    worldData: IWorldData,
+    chunkSize: ChunkSize
+}
 
-        this.notifyAll(WorldGernerationStages.STARTING_CHUNKS_GENERATION)
+class WorldGenerator extends IWorldGenerator {
+    protected generateBlocks({
+        prng,
+        length,
+        worldData,
+        chunkSize
+    }: WorldGeneratorGenerateBlocksMethodOptions): void {
+        this.notifyAll(WorldGernerationStages.GENERATION_OF_CHUNKS_STARTED)
 
         const allBiomeKeys = Object.keys(this.settings.biomes)
         const biomes: string[] = []
@@ -36,15 +41,6 @@ class WorldGenerator extends IWorldGenerator {
             }
         }
 
-        const worldData: IWorldData = {
-            id: uuidV4(),
-            seed: {
-                original: seed,
-                computed: prng.seed
-            },
-            chunks: []
-        }
-
         for (let chunkIndex = 0; chunkIndex < length; chunkIndex++) {
             const chunkData = this.chunkGenerator.generate({
                 biome: biomes[chunkIndex],
@@ -55,7 +51,36 @@ class WorldGenerator extends IWorldGenerator {
             worldData.chunks.push(chunkData)
         }
 
-        this.notifyAll(WorldGernerationStages.ENDING_CHUNKS_GENERATION)
+        this.notifyAll(WorldGernerationStages.GENERATION_OF_CHUNKS_FINISHED)
+    }
+
+    public generate({
+        seed,
+        length,
+        chunkSize,
+        prngClass
+    }: WorldGeneratorGenerateMethodOptions): IWorldData {
+        const prng = (new prngClass(seed)) as IPRNG
+
+        this.notifyAll(WorldGernerationStages.GENERATION_STARTED)
+
+        const worldData: IWorldData = {
+            id: uuidV4(),
+            seed: {
+                original: seed,
+                computed: prng.seed
+            },
+            chunks: []
+        }
+
+        this.generateBlocks({
+            prng: prng,
+            length: length,
+            worldData: worldData,
+            chunkSize: chunkSize
+        })
+
+        this.notifyAll(WorldGernerationStages.GENERATION_FINISHED)
 
         return worldData
     }
