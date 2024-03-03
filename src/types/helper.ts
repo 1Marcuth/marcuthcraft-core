@@ -1,0 +1,1 @@
+export type KeyOf<Type extends object> = keyof Type | Type[keyof Type]
