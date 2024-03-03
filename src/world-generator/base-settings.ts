@@ -38,6 +38,8 @@ export type BaseBlocksSettigs = {
 export type BaseBiomeSettings = {
     lengthRange: Range
     blocks: BaseBlocksSettigs
+    ores?: any
+    buildings?: any
 }
 
 export type BaseBiomesSettings = {

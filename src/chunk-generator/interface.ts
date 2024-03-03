@@ -1,7 +1,6 @@
 import IBlockGenerator, { IBlockData } from "../block-generator/interface"
-import { KeyOf } from "../types/helper"
+import Observable from "../common/observable"
 import { IPRNG } from "../prng"
-import { BiomeTypes } from "../enums"
 
 export type ChunkSize = {
     width: number
@@ -33,10 +32,11 @@ export type IChunkGenerateMethodOptions = {
     size: ChunkSize
 }
 
-abstract class IChunkGenerator {
+abstract class IChunkGenerator extends Observable {
     public blockGenerator: IBlockGenerator
 
     public constructor({ blockGenerator }: IChunkGeneratorOptions) {
+        super()
         this.blockGenerator = blockGenerator
     }
 

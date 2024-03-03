@@ -1,3 +1,4 @@
+import defaultWorldGeneratorSettings from "./world-generator/base-settings"
 import WorldGenerator, { IWorldGenerator } from "./world-generator"
 import ChunkGenerator from "./chunk-generator"
 import BlockGenerator from "./block-generator"
@@ -24,7 +25,8 @@ class MarcuthcraftCore {
         })
 
         const worldGenerator = new WorldGenerator({
-            chunkGenerator: chunkGenerator
+            chunkGenerator: chunkGenerator,
+            settings: defaultWorldGeneratorSettings
         }) 
 
         const instance = new MarcuthcraftCore({
@@ -35,19 +37,22 @@ class MarcuthcraftCore {
     }
 }
 
+import fs from "fs"
+
 const core = MarcuthcraftCore.default()
 
-console.dir(
-    core.worldGenerator.generate({
-        seed: "teste",
-        length: 10,
-        chunkSize: {
-            width: 16,
-            height: 16
-        },
-        prngClass: PRNG
-    }),
-    { depth: null }
-)
+const worldData = core.worldGenerator.generate({
+    seed: "teste",
+    length: 100,
+    chunkSize: {
+        width: 16,
+        height: 16
+    },
+    prngClass: PRNG
+})
+
+// console.dir(worldData, { depth: null })
+
+fs.writeFileSync("data.json", JSON.stringify(worldData))
 
 export default MarcuthcraftCore

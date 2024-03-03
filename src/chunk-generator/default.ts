@@ -15,9 +15,9 @@ class ChunkGenerator extends IChunkGenerator {
     }: ChunkGenerateMethodOptions): IChunkData {
         const chunkData: IChunkData = {
             id: uuidV4(),
-            blocks: [],
             biome,
-            size
+            size,
+            blocks: [],
         }
 
         for (let blockIndex = 0; blockIndex < (size.width * size.height); blockIndex++) {

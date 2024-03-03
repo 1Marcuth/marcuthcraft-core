@@ -1,10 +1,11 @@
 import { KeyOf } from "../types/helper"
 import { IPRNG } from "../prng"
+import Observable from "../common/observable"
 
 export enum PhysicalStates {
-    gaseous,
-    solid,
-    liquid
+    GASEOUS = "GASEOUS",
+    SOLID = "SOLID",
+    LIQUID = "LIQUID"
 }
 
 export type BlockDurability = {
@@ -50,7 +51,7 @@ export type IBlockGeneratorGenerateMethodOptions = {
     context: BlockContext
 }
 
-abstract class IBlockGenerator {
+abstract class IBlockGenerator extends Observable {
     public abstract generate({
         prng,
         context,

@@ -21,7 +21,7 @@ class BlockGenerator extends IBlockGenerator {
                 current: 0,
                 max: 0
             },
-            physicalState: PhysicalStates.solid,
+            physicalState: PhysicalStates.SOLID,
             liquidSettings: {
                 isSource: false,
                 level: 1
