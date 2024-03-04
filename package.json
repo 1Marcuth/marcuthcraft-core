@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "command-options-handler": "^0.1.5",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
