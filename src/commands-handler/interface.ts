@@ -1,4 +1,5 @@
 import { CommandOption } from "command-options-handler"
+import Observable from "../common/observable"
 import { Optional } from "../types/helper"
 
 export type Option<Value = any> = {
@@ -32,7 +33,7 @@ export type ICommandsHandlerGetCommandMethodOptions = {
 
 export type ICommandsHandlerGetCommandMethodOuput = Optional<Command>
 
-abstract class ICommandsHandler {
+abstract class ICommandsHandler extends Observable {
     public commands: Command[]
 
     public constructor(commands: Command[]) {

@@ -25,6 +25,15 @@ export type IWorldGeneratorGenerateMethodOptions = {
     prngClass: any
 }
 
+export type IWorldContinueGenerationMethodOptions = {
+    seed: string | number
+    length: number
+    chunkSize: ChunkSize
+    prngClass: any
+    data: IWorldData
+    direction: "LEFT" | "RIGHT"
+}
+
 abstract class IWorldGenerator extends Observable {
     public chunkGenerator: IChunkGenerator
     public settings: BaseWorldGeneratorSettings
@@ -36,6 +45,8 @@ abstract class IWorldGenerator extends Observable {
     }
 
     public abstract generate(options: IWorldGeneratorGenerateMethodOptions): IWorldData
+
+    public abstract continueGeneration(options: IWorldContinueGenerationMethodOptions): void
 }
 
 export default IWorldGenerator

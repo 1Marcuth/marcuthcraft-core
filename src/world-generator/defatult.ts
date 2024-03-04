@@ -1,6 +1,6 @@
 import { v4 as uuidV4 } from "uuid"
 
-import IWorldGenerator, { IWorldData, IWorldGeneratorGenerateMethodOptions } from "./inferface"
+import IWorldGenerator, { IWorldContinueGenerationMethodOptions, IWorldData, IWorldGeneratorGenerateMethodOptions } from "./inferface"
 import IChunkGenerator, { ChunkSize } from "../chunk-generator/interface"
 import { WorldGernerationStages } from "../enums"
 import { IPRNG } from "../prng"
@@ -16,6 +16,12 @@ export type WorldGeneratorGenerateBlocksMethodOptions = {
     length: number,
     worldData: IWorldData,
     chunkSize: ChunkSize
+}
+
+export type WorldGeneratorMergeWorldDataMethodOptions = {
+    original: IWorldData
+    extra: IWorldData
+    direction: "LEFT" | "RIGHT"
 }
 
 class WorldGenerator extends IWorldGenerator {
@@ -83,6 +89,55 @@ class WorldGenerator extends IWorldGenerator {
         this.notifyAll(WorldGernerationStages.GENERATION_FINISHED)
 
         return worldData
+    }
+
+    public static mergeWorldData({
+        original,
+        extra,
+        direction
+    }: WorldGeneratorMergeWorldDataMethodOptions): IWorldData {
+        const finalWorldData = {...original}
+
+        finalWorldData.chunks = direction === "LEFT" ?
+            [...extra.chunks, ...original.chunks] :
+            [...original.chunks, ...extra.chunks]
+
+        return finalWorldData
+    }
+
+    public continueGeneration({
+        seed,
+        length,
+        chunkSize,
+        prngClass,
+        data,
+        direction
+    }: IWorldContinueGenerationMethodOptions): void {
+        const prng = (new prngClass(seed)) as IPRNG
+
+        const extraWorldData = {
+            id: uuidV4(),
+            seed: {
+                original: seed,
+                computed: prng.seed
+            },
+            chunks: []
+        }
+        
+        this.generateBlocks({
+            prng: prng,
+            length: length,
+            worldData: extraWorldData,
+            chunkSize: chunkSize
+        })
+
+        const finalWorldData = WorldGenerator.mergeWorldData({
+            original: data,
+            extra: extraWorldData,
+            direction: direction
+        })
+
+        data = Object.assign(data, finalWorldData)
     }
 }
 
