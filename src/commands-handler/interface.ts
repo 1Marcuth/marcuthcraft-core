@@ -37,6 +37,7 @@ abstract class ICommandsHandler extends Observable {
     public commands: Command[]
 
     public constructor(commands: Command[]) {
+        super()
         this.commands = commands
     }
 
