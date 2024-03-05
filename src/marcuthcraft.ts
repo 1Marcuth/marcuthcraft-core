@@ -1,34 +1,33 @@
 import defaultWorldGeneratorSettings from "./world-generator/base-settings"
+import CommandsManager, { ICommandsManager } from "./commands-manager"
 import WorldGenerator, { IWorldGenerator } from "./world-generator"
-import ICommandsHandler from "./commands-handler/interface"
-import IWorldManager from "./world-manager/interface"
-import WorldManager from "./world-manager/default"
-import CommandsHandler from "./commands-handler"
+import WorldManager, { IWorldManager } from "./world-manager"
 import ChunkGenerator from "./chunk-generator"
 import BlockGenerator from "./block-generator"
 import commands from "./presets/commands"
-import PRNG from "./prng"
 import Noise from "./noise"
+import PRNG from "./prng"
 
 export type MarcuthcraftOptions = {
     worldGenerator: IWorldGenerator
     worldManager: IWorldManager
-    commandsHandler: ICommandsHandler
+    commandsManager: ICommandsManager
+    // chatManager: IChatManager
 }
 
 class MarcuthcraftCore {
     public worldGenerator: IWorldGenerator
     public worldManager: IWorldManager
-    public commandsHandler: ICommandsHandler
+    public commandsManager: ICommandsManager
 
     public constructor({
         worldGenerator,
         worldManager,
-        commandsHandler
+        commandsManager
     }: MarcuthcraftOptions) {
         this.worldGenerator = worldGenerator
         this.worldManager = worldManager
-        this.commandsHandler = commandsHandler
+        this.commandsManager = commandsManager
     }
 
     public static createDefault(): MarcuthcraftCore {
@@ -47,12 +46,12 @@ class MarcuthcraftCore {
 
         const worldManager = new WorldManager()
 
-        const commandsHandler = new CommandsHandler(commands)
+        const commandsManager = new CommandsManager(commands)
 
         const instance = new MarcuthcraftCore({
             worldGenerator: worldGenerator,
             worldManager: worldManager,
-            commandsHandler: commandsHandler
+            commandsManager: commandsManager
         })
 
         return instance

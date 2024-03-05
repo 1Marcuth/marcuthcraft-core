@@ -1,6 +1,4 @@
-import MarcuthcraftCore from "./src/marcuthcraft"
-import Noise from "./src/noise/default"
-import PRNG from "./src/prng"
+import MarcuthcraftCore from "./src"
 
 (async () => {
     const core = MarcuthcraftCore.createDefault()
@@ -32,7 +30,7 @@ import PRNG from "./src/prng"
 
 
 
-    // const result = core.commandsHandler.runCommand({
+    // const result = core.commandsManager.runCommand({
     //     name: "help",
     //     options: []
     // })

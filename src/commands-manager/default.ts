@@ -1,18 +1,18 @@
 import CommandHandler from "command-options-handler"
 
-import ICommandsHandler, {
-    ICommandsHandlerGetCommandMethodOptions,
-    ICommandsHandlerGetCommandMethodOuput,
-    ICommandsHandlerGetCommandsMethodOuput,
-    ICommandsHandlerRunCommandMethodOptions,
-    ICommandsHandlerRunCommandMethodOutput
+import ICommandsManager, {
+    ICommandsManagerGetCommandMethodOptions,
+    ICommandsManagerGetCommandMethodOuput,
+    ICommandsManagerGetCommandsMethodOuput,
+    ICommandsManagerRunCommandMethodOptions,
+    ICommandsManagerRunCommandMethodOutput
 } from "./interface"
 
-class CommandsHandler extends ICommandsHandler {
+class CommandsManager extends ICommandsManager {
     public runCommand({
         name,
         options
-    }: ICommandsHandlerRunCommandMethodOptions): ICommandsHandlerRunCommandMethodOutput {
+    }: ICommandsManagerRunCommandMethodOptions): ICommandsManagerRunCommandMethodOutput {
         const command = this.getCommand({ name: name })
 
         if (!command) {
@@ -41,14 +41,14 @@ class CommandsHandler extends ICommandsHandler {
 
     public getCommand({
         name
-    }: ICommandsHandlerGetCommandMethodOptions): ICommandsHandlerGetCommandMethodOuput {
+    }: ICommandsManagerGetCommandMethodOptions): ICommandsManagerGetCommandMethodOuput {
         const command = this.commands.find(command => command.name === name)
         return command
     }
 
-    public getCommands(): ICommandsHandlerGetCommandsMethodOuput {
+    public getCommands(): ICommandsManagerGetCommandsMethodOuput {
         return this.commands
     }
 }
 
-export default CommandsHandler
+export default CommandsManager

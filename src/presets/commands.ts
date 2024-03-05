@@ -1,12 +1,12 @@
-import { Command, /* Option, */ ICommandsHandlerRunCommandMethodOutput } from "../commands-handler/interface"
+import { Command, /* Option, */ ICommandsManagerRunCommandMethodOutput } from "../commands-manager/interface"
 
 const commands: Command[] = [
     {
         name: "help",
         onlyWithCheats: false,
         description: "Shows all available commands and their options.",
-        run: (): ICommandsHandlerRunCommandMethodOutput => {
-            const output: ICommandsHandlerRunCommandMethodOutput = {
+        run: (): ICommandsManagerRunCommandMethodOutput => {
+            const output: ICommandsManagerRunCommandMethodOutput = {
                 status: "success",
                 logs: [],
             }
