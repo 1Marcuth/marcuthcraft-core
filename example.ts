@@ -1,4 +1,5 @@
 import MarcuthcraftCore from "./src/marcuthcraft"
+import Noise from "./src/noise/default"
 import PRNG from "./src/prng"
 
 (async () => {
@@ -27,6 +28,8 @@ import PRNG from "./src/prng"
     })
 
     console.log(worldData.chunks.length)
+
+
 
     // const result = core.commandsHandler.runCommand({
     //     name: "help",
