@@ -1,6 +1,8 @@
 import IChunkGenerator, { ChunkSize, IChunkData } from "../chunk-generator/interface"
 import { BaseWorldGeneratorSettings } from "./base-settings"
 import Observable from "../common/observable"
+import { INoise } from "../noise"
+import { IPRNG } from "../prng"
 
 export type WorldSeed = {
     original: string | number
@@ -16,20 +18,20 @@ export interface IWorldData {
 export type IWorldGeneratorOptions = {
     chunkGenerator: IChunkGenerator
     settings: BaseWorldGeneratorSettings
+    prngClass: typeof IPRNG
+    noiseClass: typeof INoise
 }
 
 export type IWorldGeneratorGenerateMethodOptions = {
     seed: string | number
     length: number
     chunkSize: ChunkSize
-    prngClass: any
 }
 
 export type IWorldContinueGenerationMethodOptions = {
     seed: string | number
     length: number
     chunkSize: ChunkSize
-    prngClass: any
     data: IWorldData
     direction: "LEFT" | "RIGHT"
 }
@@ -37,11 +39,20 @@ export type IWorldContinueGenerationMethodOptions = {
 abstract class IWorldGenerator extends Observable {
     public chunkGenerator: IChunkGenerator
     public settings: BaseWorldGeneratorSettings
+    public prngClass: typeof IPRNG
+    public noiseClass: typeof INoise
 
-    public constructor(options: IWorldGeneratorOptions) {
+    public constructor({
+        chunkGenerator,
+        settings,
+        prngClass,
+        noiseClass
+    }: IWorldGeneratorOptions) {
         super()
-        this.chunkGenerator = options.chunkGenerator
-        this.settings = options.settings
+        this.chunkGenerator = chunkGenerator
+        this.settings = settings
+        this.prngClass = prngClass
+        this.noiseClass = noiseClass
     }
 
     public abstract generate(options: IWorldGeneratorGenerateMethodOptions): IWorldData

@@ -2,6 +2,7 @@ import { v4 as uuidV4 } from "uuid"
 
 import IWorldGenerator, { IWorldContinueGenerationMethodOptions, IWorldData, IWorldGeneratorGenerateMethodOptions } from "./inferface"
 import IChunkGenerator, { ChunkSize } from "../chunk-generator/interface"
+import createInstance from "../utils/create-instance"
 import { WorldGernerationStages } from "../enums"
 import { IPRNG } from "../prng"
 
@@ -63,10 +64,9 @@ class WorldGenerator extends IWorldGenerator {
     public generate({
         seed,
         length,
-        chunkSize,
-        prngClass
+        chunkSize
     }: WorldGeneratorGenerateMethodOptions): IWorldData {
-        const prng = (new prngClass(seed)) as IPRNG
+        const prng = createInstance<IPRNG>(this.prngClass, seed)
 
         this.notifyAll(WorldGernerationStages.GENERATION_STARTED)
 
@@ -109,11 +109,12 @@ class WorldGenerator extends IWorldGenerator {
         seed,
         length,
         chunkSize,
-        prngClass,
         data,
         direction
     }: IWorldContinueGenerationMethodOptions): void {
-        const prng = (new prngClass(seed)) as IPRNG
+        const prng = createInstance<IPRNG>(this.prngClass, seed)
+
+        this.notifyAll(WorldGernerationStages.GENERATION_CONTINUATION_HAS_STARTED)
 
         const extraWorldData = {
             id: uuidV4(),
@@ -138,6 +139,8 @@ class WorldGenerator extends IWorldGenerator {
         })
 
         data = Object.assign(data, finalWorldData)
+
+        this.notifyAll(WorldGernerationStages.GENERATION_CONTINUATION_HAS_BEEN_ENDED)
     }
 }
 

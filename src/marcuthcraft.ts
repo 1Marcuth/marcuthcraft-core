@@ -7,6 +7,8 @@ import CommandsHandler from "./commands-handler"
 import ChunkGenerator from "./chunk-generator"
 import BlockGenerator from "./block-generator"
 import commands from "./presets/commands"
+import PRNG from "./prng"
+import Noise from "./noise"
 
 export type MarcuthcraftOptions = {
     worldGenerator: IWorldGenerator
@@ -38,7 +40,9 @@ class MarcuthcraftCore {
 
         const worldGenerator = new WorldGenerator({
             chunkGenerator: chunkGenerator,
-            settings: defaultWorldGeneratorSettings
+            settings: defaultWorldGeneratorSettings,
+            prngClass: PRNG,
+            noiseClass: Noise
         })
 
         const worldManager = new WorldManager()

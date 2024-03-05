@@ -5,24 +5,25 @@ import PRNG from "./src/prng"
 (async () => {
     const core = MarcuthcraftCore.createDefault()
 
+    core.worldGenerator.subscribe(console.log)
+    const worldHeight = 128
+
     const worldData = core.worldGenerator.generate({
         chunkSize: {
             width: 16,
-            height: 16
+            height: worldHeight
         },
         length: 10,
-        seed: 123,
-        prngClass: PRNG
+        seed: 123
     })
 
     core.worldGenerator.continueGeneration({
         chunkSize: {
             width: 16,
-            height: 16
+            height: worldHeight
         },
         length: 10,
         seed: 123,
-        prngClass: PRNG,
         data: worldData,
         direction: "LEFT"
     })
