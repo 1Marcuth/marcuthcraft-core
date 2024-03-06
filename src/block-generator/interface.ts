@@ -1,6 +1,6 @@
+import Observable from "../common/observable"
 import { KeyOf } from "../types/helper"
 import { IPRNG } from "../prng"
-import Observable from "../common/observable"
 
 export enum PhysicalStates {
     GASEOUS = "GASEOUS",
@@ -23,8 +23,6 @@ export type LiquidSettings = {
 export interface IBlockData {
     id: string
     type: string
-    durability: BlockDurability
-    physicalState: PhysicalState
     liquidSettings?: LiquidSettings
 }
 

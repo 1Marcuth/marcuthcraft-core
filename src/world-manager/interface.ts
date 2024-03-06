@@ -2,6 +2,7 @@ import { IWorldData } from "../world-generator/inferface"
 import Observable from "../common/observable"
 import { KeyOf, Optional } from "../types/helper"
 import { MoveDirections } from "../enums"
+import { IWorldClock } from "../world-clock"
 
 export type IEntity = {
     id: string
@@ -17,6 +18,7 @@ export type IWorldManagerSetWorldMethodOptions = {
     data: IWorldData
     entities: IEntity[]
     players: IPlayer[]
+    worldClock: IWorldClock
 }
 
 export type IWorldManagerMoveEntityMethodOptions = {
@@ -68,40 +70,13 @@ abstract class IWorldManager extends Observable {
     public data?: IWorldData
     public entities?: IEntity[]
     public players?: IPlayer[]
+    public worldClock?: IWorldClock
 
-    public setWorld({
-        data,
-        entities,
-        players
-    }: IWorldManagerSetWorldMethodOptions) {
-        this.data = data
-        this.entities = entities
-        this.players = players
-    }
+    public abstract setWorld(options: IWorldManagerSetWorldMethodOptions): void
 
-    public executeEntityAction(command: EntityActionCommand): void {
-        if (!this.entities || this.entities.length <= 0) return
+    public abstract executeEntityAction(command: EntityActionCommand): void
 
-        if (command.type === "move") {
-            const entity = this.entities.find(entity => entity.id === command.id)
-
-            if (entity) {
-                entity.move()
-            }
-        }
-    }
-
-    public executePlayerAction(command: PlayerActionCommand): void {
-        if (!this.players || this.players.length <= 0) return
-
-        if (command.type === "move") {
-            const player = this.players.find(player => player.id === command.id)
-
-            if (player) {
-                player.move()
-            }
-        }
-    }
+    public abstract executePlayerAction(command: PlayerActionCommand): void
 }
 
 export default IWorldManager

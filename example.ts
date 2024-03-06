@@ -1,4 +1,7 @@
+import fs from "fs"
+
 import MarcuthcraftCore from "./src"
+import WorldClock from "./src/world-clock"
 
 (async () => {
     const core = MarcuthcraftCore.createDefault()
@@ -26,7 +29,31 @@ import MarcuthcraftCore from "./src"
         direction: "LEFT"
     })
 
-    console.log(worldData.chunks.length)
+    core.worldGenerator.continueGeneration({
+        chunkSize: {
+            width: 16,
+            height: worldHeight
+        },
+        length: 10,
+        seed: 123,
+        data: worldData,
+        direction: "RIGHT"
+    })
+
+    const worldClock = new WorldClock({ intervalTime: 50 })
+
+    worldClock.subscribe(console.log)
+
+    core.worldManager.setWorld({
+        data: worldData,
+        entities: [],
+        players: [],
+        worldClock: worldClock
+    })
+
+    fs.writeFileSync("world.json", JSON.stringify(worldData))
+
+    // console.log(worldData.chunks.length)
 
 
 

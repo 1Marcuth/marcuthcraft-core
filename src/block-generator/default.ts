@@ -1,10 +1,6 @@
 import { v4 as uuidV4 } from "uuid"
 
-import IBlockGenerator, {
-    IBlockGeneratorGenerateMethodOptions,
-    IBlockData,
-    PhysicalStates
-} from "./interface"
+import IBlockGenerator, { IBlockGeneratorGenerateMethodOptions, IBlockData } from "./interface"
 
 export type BlockGeneratorGenerateMethodOptions = IBlockGeneratorGenerateMethodOptions & {}
 
@@ -16,16 +12,7 @@ class BlockGenerator extends IBlockGenerator {
     }: BlockGeneratorGenerateMethodOptions): IBlockData {
         const blockData: IBlockData = {
             id: uuidV4(),
-            type: "DIRTY",
-            durability: {
-                current: 0,
-                max: 0
-            },
-            physicalState: PhysicalStates.SOLID,
-            liquidSettings: {
-                isSource: false,
-                level: 1
-            }
+            type: "DIRTY"
         }
 
         for (let contextBlockIndex = 0; contextBlockIndex < context.blocks.length; contextBlockIndex++) {
