@@ -1,11 +1,29 @@
 import IWorldManager, { EntityActionCommand, IWorldManagerSetWorldMethodOptions, PlayerActionCommand } from "./interface"
 
 class WorldManager extends IWorldManager {
-    public setWorld({ data, entities, players, worldClock }: IWorldManagerSetWorldMethodOptions): void {
+    public setWorld({
+        data,
+        entities,
+        players,
+        worldClock
+    }: IWorldManagerSetWorldMethodOptions): void {
         this.data = data
         this.entities = entities
         this.players = players
         this.worldClock = worldClock
+
+        this.worldClock.subscribe(this.handleTimeLoop)
+    }
+
+    public start() {
+        if (
+            this.data === undefined ||
+            this.entities === undefined ||
+            this.players === undefined ||
+            this.worldClock === undefined
+        ) {
+            throw new Error("You must define the clock, data, entities and players present in this before starting the manager!")
+        }
 
         this.worldClock.start()
     }
@@ -31,6 +49,12 @@ class WorldManager extends IWorldManager {
             if (player) {
                 player.move()
             }
+        }
+    }
+
+    protected handleTimeLoop(event: string): void {
+        if (event === "tick") {
+            
         }
     }
 }

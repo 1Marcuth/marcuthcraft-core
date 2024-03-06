@@ -1,8 +1,9 @@
+import IGravityManager from "../gravity-manager/interface"
 import { IWorldData } from "../world-generator/inferface"
 import Observable from "../common/observable"
-import { KeyOf, Optional } from "../types/helper"
-import { MoveDirections } from "../enums"
 import { IWorldClock } from "../world-clock"
+import { MoveDirections } from "../enums"
+import { KeyOf } from "../types/helper"
 
 export type IEntity = {
     id: string
@@ -19,6 +20,7 @@ export type IWorldManagerSetWorldMethodOptions = {
     entities: IEntity[]
     players: IPlayer[]
     worldClock: IWorldClock
+    gravityManager: IGravityManager
 }
 
 export type IWorldManagerMoveEntityMethodOptions = {
@@ -71,8 +73,11 @@ abstract class IWorldManager extends Observable {
     public entities?: IEntity[]
     public players?: IPlayer[]
     public worldClock?: IWorldClock
+    public gravityManager?: IGravityManager
 
     public abstract setWorld(options: IWorldManagerSetWorldMethodOptions): void
+
+    public abstract start(): void
 
     public abstract executeEntityAction(command: EntityActionCommand): void
 

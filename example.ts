@@ -2,6 +2,7 @@ import fs from "fs"
 
 import MarcuthcraftCore from "./src"
 import WorldClock from "./src/world-clock"
+import GravityManager from "./src/gravity-manager"
 
 (async () => {
     const core = MarcuthcraftCore.createDefault()
@@ -35,27 +36,35 @@ import WorldClock from "./src/world-clock"
             height: worldHeight
         },
         length: 10,
-        seed: 123,
+        seed: "123",
         data: worldData,
         direction: "RIGHT"
     })
 
     const worldClock = new WorldClock({ intervalTime: 50 })
 
-    worldClock.subscribe(console.log)
+    const gravityManager = new GravityManager({
+        data: worldData,
+        simulationDistance: 2
+    })
 
     core.worldManager.setWorld({
         data: worldData,
         entities: [],
         players: [],
-        worldClock: worldClock
+        worldClock: worldClock,
+        gravityManager: gravityManager
     })
 
-    fs.writeFileSync("world.json", JSON.stringify(worldData))
+    core.worldManager.start()
+
+    fs.writeFileSync("examples/world.json", JSON.stringify({
+        entities: [],
+        players: [],
+        data: worldData
+    }))
 
     // console.log(worldData.chunks.length)
-
-
 
     // const result = core.commandsManager.runCommand({
     //     name: "help",
