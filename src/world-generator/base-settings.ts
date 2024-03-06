@@ -35,11 +35,21 @@ export type BaseBlocksSettigs = {
     [key: string]: BaseBlockSettings
 }
 
+export type BaseBiomeSettingsTerrainNoise = {
+    scale: number
+    octaves: number
+    persistence: number
+    lacunarity: number
+}
+
 export type BaseBiomeSettings = {
     lengthRange: Range
     blocks: BaseBlocksSettigs
     ores?: any
-    buildings?: any
+    buildings?: any,
+    terrainNoise: BaseBiomeSettingsTerrainNoise
+    heightNoiseMultiplier: number
+    maxHeight: number
 }
 
 export type BaseBiomesSettings = {
@@ -77,6 +87,8 @@ const defaultWorldGeneratorSettings: BaseWorldGeneratorSettings = {
     biomes: {
         PLAINS: {
             lengthRange: [5, 16],
+            heightNoiseMultiplier: 15,
+            maxHeight: 80,
             blocks: {
                 BEDROCK: defaultBedrockSettings,
                 STONE: [
@@ -124,10 +136,18 @@ const defaultWorldGeneratorSettings: BaseWorldGeneratorSettings = {
                         ]
                     }
                 ]
+            },
+            terrainNoise: {
+                scale: 30,
+                octaves: 2,
+                persistence: .5,
+                lacunarity: 2
             }
         },
         DESERT: {
             lengthRange: [5, 16],
+            heightNoiseMultiplier: 15,
+            maxHeight: 80,
             blocks: {
                 BEDROCK: defaultBedrockSettings,
                 STONE: [
@@ -182,6 +202,12 @@ const defaultWorldGeneratorSettings: BaseWorldGeneratorSettings = {
                         ]
                     }
                 ]
+            },
+            terrainNoise: {
+                scale: 30,
+                octaves: 2,
+                persistence: .5,
+                lacunarity: 2
             }
         }
     }

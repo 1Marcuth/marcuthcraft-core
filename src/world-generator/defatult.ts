@@ -14,9 +14,10 @@ export type WorldGeneratorGenerateMethodOptions = IWorldGeneratorGenerateMethodO
 
 export type WorldGeneratorGenerateBlocksMethodOptions = {
     prng: IPRNG
-    length: number,
-    worldData: IWorldData,
+    length: number
+    worldData: IWorldData
     chunkSize: ChunkSize
+    isContinuation?: boolean
 }
 
 export type WorldGeneratorMergeWorldDataMethodOptions = {
@@ -25,14 +26,28 @@ export type WorldGeneratorMergeWorldDataMethodOptions = {
     direction: "LEFT" | "RIGHT"
 }
 
+export type WorldGeneratorGenerateChunksMethodOptions = {
+    prng: IPRNG
+    length: number
+    worldData: IWorldData
+    chunkSize: ChunkSize
+    chunkIndex: number
+    isContinuation?: boolean
+}
+
 class WorldGenerator extends IWorldGenerator {
     protected generateBlocks({
         prng,
         length,
         worldData,
-        chunkSize
+        chunkSize,
+        isContinuation
     }: WorldGeneratorGenerateBlocksMethodOptions): void {
-        this.notifyAll(WorldGernerationStages.GENERATION_OF_CHUNKS_STARTED)
+        this.notifyAll(
+            isContinuation ?
+            WorldGernerationStages["CONTINUATION.GENERATION_OF_CHUNKS_STARTED"] :
+            WorldGernerationStages.GENERATION_OF_CHUNKS_STARTED
+        )
 
         const allBiomeKeys = Object.keys(this.settings.biomes)
         const biomes: string[] = []
@@ -49,16 +64,79 @@ class WorldGenerator extends IWorldGenerator {
         }
 
         for (let chunkIndex = 0; chunkIndex < length; chunkIndex++) {
+            const biomeType = biomes[chunkIndex]
+
             const chunkData = this.chunkGenerator.generate({
-                biome: biomes[chunkIndex],
+                biome: biomeType,
                 prng: prng,
-                size: chunkSize
+                size: chunkSize,
+                biomeSettings: this.settings.biomes[biomeType as any],
+                terrainNoise: ,
             })
 
             worldData.chunks.push(chunkData)
         }
 
-        this.notifyAll(WorldGernerationStages.GENERATION_OF_CHUNKS_FINISHED)
+        this.notifyAll(
+            isContinuation ?
+            WorldGernerationStages["CONTINUATION.GENERATION_OF_CHUNKS_FINISHED"] :
+            WorldGernerationStages.GENERATION_OF_CHUNKS_FINISHED
+        )
+    }
+
+    protected generateChunks({
+        prng,
+        length,
+        worldData,
+        chunkSize,
+        isContinuation
+    }: WorldGeneratorGenerateChunksMethodOptions): void {
+        this.notifyAll(
+            isContinuation ?
+            WorldGernerationStages["CONTINUATION.GENERATION_OF_CHUNKS_STARTED"] :
+            WorldGernerationStages.GENERATION_OF_CHUNKS_STARTED
+        )
+
+        const allBiomeKeys = Object.keys(this.settings.biomes)
+        const biomes: string[] = []
+        
+        while (biomes.length < length) {
+            const selectedBiomeIndex = Math.floor(prng.next() * allBiomeKeys.length)
+            const biomeType = allBiomeKeys[selectedBiomeIndex]
+            const biome = this.settings.biomes[biomeType]
+            const randomRange = prng.next(biome.lengthRange[0], biome.lengthRange[1])
+
+            for (let i = 0; i < randomRange; i++) {
+                biomes.push(biomeType)
+            }
+        }
+
+        for (let chunkIndex = 0; chunkIndex < length; chunkIndex++) {
+            const terrainNoisePreset = this.settings.biomes[biomes[chunkIndex]].terrainNoise
+
+            const terrainNoise = this.noiseClass.generateHeightMap({
+                seed: prng.seed,
+                offset: chunkIndex * chunkSize.width,
+                width: chunkSize.width,
+                ...terrainNoisePreset
+            })
+
+            const chunkData = this.chunkGenerator.generate({
+                biome: biomes[chunkIndex],
+                prng: prng,
+                size: chunkSize,
+                terrainNoise: terrainNoise,
+                biomeSettings: 
+            })
+
+            worldData.chunks.push(chunkData)
+        }
+
+        this.notifyAll(
+            isContinuation ?
+            WorldGernerationStages["CONTINUATION.GENERATION_OF_CHUNKS_FINISHED"] :
+            WorldGernerationStages.GENERATION_OF_CHUNKS_FINISHED
+        )
     }
 
     public generate({
@@ -114,7 +192,7 @@ class WorldGenerator extends IWorldGenerator {
     }: IWorldContinueGenerationMethodOptions): void {
         const prng = createInstance<IPRNG>(this.prngClass, seed)
 
-        this.notifyAll(WorldGernerationStages.GENERATION_CONTINUATION_HAS_STARTED)
+        this.notifyAll(WorldGernerationStages["CONTINUATION.GENERATION_STARTED"])
 
         const extraWorldData = {
             id: uuidV4(),
@@ -129,7 +207,8 @@ class WorldGenerator extends IWorldGenerator {
             prng: prng,
             length: length,
             worldData: extraWorldData,
-            chunkSize: chunkSize
+            chunkSize: chunkSize,
+            isContinuation: true
         })
 
         const finalWorldData = WorldGenerator.mergeWorldData({
@@ -140,7 +219,7 @@ class WorldGenerator extends IWorldGenerator {
 
         data = Object.assign(data, finalWorldData)
 
-        this.notifyAll(WorldGernerationStages.GENERATION_CONTINUATION_HAS_BEEN_ENDED)
+        this.notifyAll(WorldGernerationStages["CONTINUATION.GENERATION_FINISHED"])
     }
 }
 

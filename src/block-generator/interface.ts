@@ -48,15 +48,12 @@ export type BlockContext = {
 export type IBlockGeneratorGenerateMethodOptions = {
     prng: IPRNG
     layer: number
+    terrainHeight: number
     context: BlockContext
 }
 
 abstract class IBlockGenerator extends Observable {
-    public abstract generate({
-        prng,
-        context,
-        layer
-    }: IBlockGeneratorGenerateMethodOptions): IBlockData
+    public abstract generate(options: IBlockGeneratorGenerateMethodOptions): IBlockData
 }
 
 export default IBlockGenerator
