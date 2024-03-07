@@ -5,7 +5,10 @@ export type IWorldClockStartMethodOptions = {
 }
 
 abstract class IWorldClock extends Observable {
+    public abstract tickCount: number
+    
     public abstract start(): void
+    public abstract get currentDay(): number
 }
 
 export default IWorldClock

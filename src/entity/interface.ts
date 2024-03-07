@@ -44,8 +44,13 @@ export type IEntitySetHealthPointOptions = {
     points: number
 }
 
+export type IEntityData = {
+
+}
+
 abstract class IEntity extends Observable {
     public id: string
+    //public data: IEntityData
     protected originalHealthPoints: number
     protected originalDamagePoints: number
     public healthPoints: number
