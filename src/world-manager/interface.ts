@@ -1,24 +1,14 @@
 import IGravityManager from "../gravity-manager/interface"
-import { IWorldData } from "../world-generator/inferface"
+import { WorldData } from "../world-generator/inferface"
 import Observable from "../common/observable"
 import { IWorldClock } from "../world-clock"
 import { MoveDirections } from "../enums"
 import { KeyOf } from "../types/helper"
-
-export type IEntity = {
-    id: string
-    move(): void
-}
-
-export type IPlayer = {
-    id: string
-    move(): void
-}
+import { IEntity } from "../entity"
 
 export type IWorldManagerSetWorldMethodOptions = {
-    data: IWorldData
+    data: WorldData
     entities: IEntity[]
-    players: IPlayer[]
     worldClock: IWorldClock
     gravityManager: IGravityManager
 }
@@ -68,20 +58,15 @@ export type EntityActionCommand = (
     Partial<EntityActionMoveCommand>
 )
 
-abstract class IWorldManager extends Observable {
-    public data?: IWorldData
-    public entities?: IEntity[]
-    public players?: IPlayer[]
-    public worldClock?: IWorldClock
-    public gravityManager?: IGravityManager
+interface IWorldManager extends Observable {
+    data?: WorldData
+    entities?: IEntity[]
+    worldClock?: IWorldClock
+    gravityManager?: IGravityManager
 
-    public abstract setWorld(options: IWorldManagerSetWorldMethodOptions): void
-
-    public abstract start(): void
-
-    public abstract executeEntityAction(command: EntityActionCommand): void
-
-    public abstract executePlayerAction(command: PlayerActionCommand): void
+    setWorld(options: IWorldManagerSetWorldMethodOptions): void
+    start(): void
+    executeEntityAction(command: EntityActionCommand): void
 }
 
 export default IWorldManager

@@ -1,13 +1,13 @@
-import { IWorldData } from "../world-generator/inferface"
+import { WorldData } from "../world-generator/inferface"
 import Observable from "../common/observable"
 
 export type IGravityManagerOptions = {
-    data: IWorldData
+    data: WorldData
     simulationDistance: number
 }
 
 abstract class IGravityManager extends Observable {
-    public data: IWorldData
+    public data: WorldData
     public simulationDistance: number
 
     public constructor({

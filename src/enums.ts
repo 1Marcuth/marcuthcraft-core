@@ -93,3 +93,9 @@ export enum DeathReasons {
     TRIED_SWIMMING_IN_LAVA = "TRIED_SWIMMING_IN_LAVA",
     WAS_BURNED_ALIVE = "WAS_BURNED_ALIVE"
 }
+
+export enum BlockEvents {
+    DESTROYED = "DESTROYED",
+    REPLACED_DATA = "REPLACED_DATA",
+    ITEM_DROPPED = "ITEM_DROPPED"
+}

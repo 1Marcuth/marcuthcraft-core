@@ -1,6 +1,6 @@
 import { v4 as uuidV4 } from "uuid"
 
-import IWorldGenerator, { IWorldContinueGenerationMethodOptions, IWorldData, IWorldGeneratorGenerateMethodOptions } from "./inferface"
+import IWorldGenerator, { IWorldContinueGenerationMethodOptions, WorldData, IWorldGeneratorGenerateMethodOptions } from "./inferface"
 import IChunkGenerator, { ChunkSize } from "../chunk-generator/interface"
 import createInstance from "../utils/create-instance"
 import { WorldGernerationStages } from "../enums"
@@ -15,7 +15,7 @@ export type WorldGeneratorGenerateMethodOptions = IWorldGeneratorGenerateMethodO
 export type WorldGeneratorGenerateBlocksMethodOptions = {
     prng: IPRNG
     length: number
-    worldData: IWorldData
+    worldData: WorldData
     chunkSize: ChunkSize
     isContinuation?: boolean
 }
@@ -23,15 +23,15 @@ export type WorldGeneratorGenerateBlocksMethodOptions = {
 export type MergeWorldDataDirection = "LEFT" | "RIGHT"
 
 export type WorldGeneratorMergeWorldDataMethodOptions = {
-    original: IWorldData
-    extra: IWorldData
+    original: WorldData
+    extra: WorldData
     direction: MergeWorldDataDirection
 }
 
 export type WorldGeneratorGenerateChunksMethodOptions = {
     prng: IPRNG
     length: number
-    worldData: IWorldData
+    worldData: WorldData
     chunkSize: ChunkSize
     isContinuation?: boolean
 }
@@ -98,12 +98,12 @@ class WorldGenerator extends IWorldGenerator {
         seed,
         length,
         chunkSize
-    }: WorldGeneratorGenerateMethodOptions): IWorldData {
+    }: WorldGeneratorGenerateMethodOptions): WorldData {
         const prng = createInstance<IPRNG>(this.prngClass, seed)
 
         this.notifyAll(WorldGernerationStages.GENERATION_STARTED)
 
-        const worldData: IWorldData = {
+        const worldData: WorldData = {
             id: uuidV4(),
             seed: {
                 original: seed,
@@ -128,7 +128,7 @@ class WorldGenerator extends IWorldGenerator {
         original,
         extra,
         direction
-    }: WorldGeneratorMergeWorldDataMethodOptions): IWorldData {
+    }: WorldGeneratorMergeWorldDataMethodOptions): WorldData {
         const finalWorldData = {...original}
 
         finalWorldData.chunks = direction === "LEFT" ?

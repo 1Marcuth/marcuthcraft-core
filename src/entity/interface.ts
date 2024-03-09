@@ -1,172 +1,30 @@
-import { v4 as uuidV4 } from "uuid"
-
-import { DeathReasons, MoveDirections } from "../enums"
 import Observable from "../common/observable"
-import { KeyOf } from "../types/helper"
 
-export type IEntityOptions = {
-    healthPoints: number
-    damagePoints: number
+export type EntityMoveMethodOptions = {
+    vertical?: false | "ADD" | "SUBTRACT"
+    horizontal?: false | "ADD" | "SUBTRACT"
 }
 
-export type IEntityMoveMethodOptions = {
-    speed: number
-    direction: KeyOf<typeof MoveDirections>
+export type MovementSpeed = {
+    vertical: number
+    horizontal: number
 }
 
-export type IEntityIncreaseHealthPointOptions = {
-    points: number
-    reason: string
+export type EntityData = {
+    movementSpeed: MovementSpeed
 }
 
-export type IEntityDecreaseHealthPointOptions = {
-    points: number
-    reason: string
+export type Position = {
+    x: number
+    y: number
 }
 
-export type IEntityBeAttackedMethodOptions = {
-    byEntityId?: string
-    damageType: string
-    damage: number
-}
+interface IEntity extends Observable {
+    id: string
+    data: EntityData
+    position: Position
 
-export type IEntityAttackMethodOptions = {
-    forEntity: IEntity
-    damageType: string
-    damage: number
-}
-
-export type IEntityDieMethodOptions = {
-    reason: (KeyOf<typeof DeathReasons>) | string
-}
-
-export type IEntitySetHealthPointOptions = {
-    points: number
-}
-
-export type IEntityData = {
-
-}
-
-abstract class IEntity extends Observable {
-    public id: string
-    //public data: IEntityData
-    protected originalHealthPoints: number
-    protected originalDamagePoints: number
-    public healthPoints: number
-    public damagePoints: number
-
-    public constructor({
-        healthPoints,
-        damagePoints
-    }: IEntityOptions) {
-        super()
-
-        this.id = uuidV4()
-        this.originalHealthPoints = healthPoints
-        this.originalDamagePoints = damagePoints
-        this.healthPoints = healthPoints
-        this.damagePoints = damagePoints
-
-        this.subscribe(this.handleEvent.bind(this))
-    }
-
-    protected handleEvent(event: string, ...args: any[]): void {
-        switch (event) {
-            case "LOST_HEALTH_POINTS": {
-                const { healthPoints, reason } = args[0]
-
-                if (healthPoints <= 0) {
-                    this.die({ reason: reason })
-                }
-
-                break
-            }
-        }
-    }
-
-    public abstract move(options: IEntityMoveMethodOptions): void
-
-    protected setHealthPoints({
-        points
-    }: IEntitySetHealthPointOptions): void {
-        this.healthPoints = points
-    }
-
-    protected increaseHealthPoints({
-        points,
-        reason
-    }: IEntityIncreaseHealthPointOptions): void {
-        this.healthPoints = Math.min(this.healthPoints + points, this.originalHealthPoints)
-
-        this.notifyAll("RECEIVED_HEALTH_POINTS", {
-            points: points,
-            healthPoints: this.healthPoints,
-            reason: reason
-        })
-    }
-
-    protected decreaseHealthPoints({
-        points,
-        reason
-    }: IEntityDecreaseHealthPointOptions): void {
-        this.healthPoints = Math.max(this.healthPoints - points, 0)
-
-        this.notifyAll("LOST_HEALTH_POINTS", {
-            points: points,
-            healthPoints: this.healthPoints,
-            reason: reason
-        })
-    }
-
-    public beAttacked({
-        damage,
-        damageType,
-        byEntityId
-    }: IEntityBeAttackedMethodOptions): void {
-
-        this.notifyAll("WAS_ATTACKED", {
-            damage: damage,
-            damageType: damageType,
-            healthPoints: this.healthPoints,
-            isAlive: this.isAlive,
-            byEntityId: byEntityId
-        })
-    }
-
-    public attack({
-        damage,
-        damageType,
-        forEntity
-    }: IEntityAttackMethodOptions): void {
-        forEntity.beAttacked({
-            damage: damage,
-            damageType: damageType,
-            byEntityId: this.id
-        })
-
-        this.notifyAll("ATTACKED", {
-            damage: damage,
-            damageType: damageType,
-            forEntityId: forEntity.id
-        })
-    }
-
-    protected die({
-        reason
-    }: IEntityDieMethodOptions): void {
-        this.notifyAll("DIED", {
-            reason: reason
-        })
-    }
-
-    public get isAlive(): boolean {
-        return this.healthPoints > 0
-    }
-
-    public get isDead(): boolean {
-        return !this.isAlive
-    }
+    move(directions: EntityMoveMethodOptions): void
 }
 
 export default IEntity

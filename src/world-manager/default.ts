@@ -1,16 +1,28 @@
 import IWorldManager, { EntityActionCommand, IWorldManagerSetWorldMethodOptions, PlayerActionCommand } from "./interface"
+import Observable from "../common/observable"
+import { WorldData } from "../world-generator/inferface"
+import { IEntity } from "../entity"
+import { IWorldClock } from "../world-clock"
+import { IGravityManager } from "../gravity-manager"
 
-class WorldManager extends IWorldManager {
+class WorldManager extends Observable implements IWorldManager {
+    public data?: WorldData
+    public entities?: IEntity[]
+    public worldClock?: IWorldClock
+    public gravityManager?: IGravityManager
+
+    public constructor() {
+        super()
+    }
+
     public setWorld({
         data,
         entities,
-        players,
         worldClock,
         gravityManager
     }: IWorldManagerSetWorldMethodOptions): void {
         this.data = data
         this.entities = entities
-        this.players = players
         this.worldClock = worldClock
         this.gravityManager = gravityManager
 
@@ -21,7 +33,6 @@ class WorldManager extends IWorldManager {
         if (
             this.data === undefined ||
             this.entities === undefined ||
-            this.players === undefined ||
             this.worldClock === undefined ||
             this.gravityManager === undefined
         ) {
@@ -38,19 +49,10 @@ class WorldManager extends IWorldManager {
             const entity = this.entities.find(entity => entity.id === command.id)
 
             if (entity) {
-                entity.move()
-            }
-        }
-    }
-
-    public executePlayerAction(command: PlayerActionCommand): void {
-        if (!this.players || this.players.length <= 0) return
-
-        if (command.type === "move") {
-            const player = this.players.find(player => player.id === command.id)
-
-            if (player) {
-                player.move()
+                entity.move({
+                    horizontal: command.horizontal,
+                    vertical: command.vertical
+                })
             }
         }
     }
@@ -59,7 +61,6 @@ class WorldManager extends IWorldManager {
         if (
             this.data === undefined ||
             this.entities === undefined ||
-            this.players === undefined ||
             this.worldClock === undefined ||
             this.gravityManager === undefined
         ) {

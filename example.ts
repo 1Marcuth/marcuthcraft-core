@@ -51,7 +51,6 @@ import GravityManager from "./src/gravity-manager"
     core.worldManager.setWorld({
         data: worldData,
         entities: [],
-        players: [],
         worldClock: worldClock,
         gravityManager: gravityManager
     })
@@ -60,7 +59,6 @@ import GravityManager from "./src/gravity-manager"
 
     fs.writeFileSync("examples/world.json", JSON.stringify({
         entities: [],
-        players: [],
         data: worldData
     }))
 

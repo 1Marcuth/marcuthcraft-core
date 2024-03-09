@@ -1,3 +1,4 @@
+import { BlockData } from "../block/interface"
 import Observable from "../common/observable"
 import { KeyOf } from "../types/helper"
 import { IPRNG } from "../prng"
@@ -15,28 +16,17 @@ export type BlockDurability = {
 
 export type PhysicalState = KeyOf<typeof PhysicalStates>
 
-export type LiquidSettings = {
-    isSource: boolean
-    level: number
-}
-
-export interface IBlockData {
-    id: string
-    type: string
-    liquidSettings?: LiquidSettings
-}
-
-export type IBlockDataOrNull = IBlockData | null
+export type BlockDataOrNull = BlockData | null
 
 export type BlockContextBlocks = [
-    IBlockDataOrNull,
-    IBlockDataOrNull,
-    IBlockDataOrNull,
-    IBlockDataOrNull,
-    IBlockDataOrNull,
-    IBlockDataOrNull,
-    IBlockDataOrNull,
-    IBlockDataOrNull
+    BlockDataOrNull,
+    BlockDataOrNull,
+    BlockDataOrNull,
+    BlockDataOrNull,
+    BlockDataOrNull,
+    BlockDataOrNull,
+    BlockDataOrNull,
+    BlockDataOrNull
 ]
 
 export type BlockContext = {
@@ -50,8 +40,8 @@ export type IBlockGeneratorGenerateMethodOptions = {
     context: BlockContext
 }
 
-abstract class IBlockGenerator extends Observable {
-    public abstract generate(options: IBlockGeneratorGenerateMethodOptions): IBlockData
+interface IBlockGenerator extends Observable {
+    generate(options: IBlockGeneratorGenerateMethodOptions): BlockData
 }
 
 export default IBlockGenerator

@@ -1,16 +1,18 @@
 import { v4 as uuidV4 } from "uuid"
 
-import IBlockGenerator, { IBlockGeneratorGenerateMethodOptions, IBlockData } from "./interface"
+import IBlockGenerator, { IBlockGeneratorGenerateMethodOptions } from "./interface"
+import { BlockData } from "../block/interface"
+import Observable from "../common/observable"
 
 export type BlockGeneratorGenerateMethodOptions = IBlockGeneratorGenerateMethodOptions & {}
 
-class BlockGenerator extends IBlockGenerator {
+class BlockGenerator extends Observable implements IBlockGenerator {
     public generate({
         prng,
         context,
         layer
-    }: BlockGeneratorGenerateMethodOptions): IBlockData {
-        const blockData: IBlockData = {
+    }: BlockGeneratorGenerateMethodOptions): BlockData {
+        const blockData: BlockData = {
             id: uuidV4(),
             type: "DIRTY"
         }

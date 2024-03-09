@@ -9,7 +9,7 @@ export type WorldSeed = {
     computed: number
 }
 
-export interface IWorldData {
+export interface WorldData {
     id: string
     seed: WorldSeed
     chunks: IChunkData[]
@@ -32,7 +32,7 @@ export type IWorldContinueGenerationMethodOptions = {
     seed: string | number
     length: number
     chunkSize: ChunkSize
-    data: IWorldData
+    data: WorldData
     direction: "LEFT" | "RIGHT"
 }
 
@@ -55,7 +55,7 @@ abstract class IWorldGenerator extends Observable {
         this.noiseClass = noiseClass
     }
 
-    public abstract generate(options: IWorldGeneratorGenerateMethodOptions): IWorldData
+    public abstract generate(options: IWorldGeneratorGenerateMethodOptions): WorldData
 
     public abstract continueGeneration(options: IWorldContinueGenerationMethodOptions): void
 }
