@@ -10,12 +10,10 @@ class BlockGenerator extends Observable implements IBlockGenerator {
     public generate({
         prng,
         context,
-        layer
+        layer,
+        terrainHeight
     }: BlockGeneratorGenerateMethodOptions): BlockData {
-        const blockData: BlockData = {
-            id: uuidV4(),
-            type: "DIRTY"
-        }
+        let blockData: BlockData
 
         for (let contextBlockIndex = 0; contextBlockIndex < context.blocks.length; contextBlockIndex++) {
             const contextBlock = context.blocks[contextBlockIndex]

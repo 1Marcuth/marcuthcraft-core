@@ -4,10 +4,24 @@ import IChunkGenerator, {
     IChunkData,
     IChunkGenerateMethodOptions
 } from "./interface"
+import { IBlockGenerator } from "../block-generator"
+import Observable from "../common/observable"
 
-type ChunkGenerateMethodOptions = IChunkGenerateMethodOptions & {}
+export type ChunkGeneratorOptions = {
+    blockGenerator: IBlockGenerator
+}
 
-class ChunkGenerator extends IChunkGenerator {
+export type ChunkGenerateMethodOptions = IChunkGenerateMethodOptions & {}
+
+class ChunkGenerator extends Observable implements IChunkGenerator {
+    public blockGenerator: IBlockGenerator
+
+    public constructor({ blockGenerator }: ChunkGeneratorOptions) {
+        super()
+
+        this.blockGenerator = blockGenerator
+    }
+
     public generate({
         prng,
         biome,
