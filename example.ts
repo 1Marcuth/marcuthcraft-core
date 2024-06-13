@@ -1,7 +1,7 @@
 import fs from "fs"
 
-import MarcuthCraftCore from "./core"
-import WorldGeneratorEvents from "./enums/world-generator-events"
+import MarcuthCraftCore from "./src/core"
+import WorldGeneratorEvents from "./src/enums/world-generator-events"
 
 async function main(): Promise<void> {
     const core = MarcuthCraftCore.createDefault()

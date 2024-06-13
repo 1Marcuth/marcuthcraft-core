@@ -1,15 +1,18 @@
 {
   "name": "marcuthcraft-core",
+  "declaration": "./dist/index.d.ts",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node index.ts"
+    "dev": "ts-node index.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^20.14.2",
     "@types/uuid": "^9.0.8",
     "ts-node": "^10.9.2"
   },
