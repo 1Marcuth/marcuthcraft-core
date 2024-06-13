@@ -1,0 +1,8 @@
+enum ChunkGeneratorEvents {
+    START = "START",
+    BLOCKS_GENERATION_STARTING = "BLOCKS_GENERATION_STARTING",
+    BLOCKS_GENERATION_FINISHING = "BLOCKS_GENERATION_FINISHING",
+    END = "END"
+}
+
+export default ChunkGeneratorEvents

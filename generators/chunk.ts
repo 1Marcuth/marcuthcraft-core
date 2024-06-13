@@ -1,6 +1,9 @@
 import { v4 as uuid } from "uuid"
 
 import BlockGenerator, { BlockData } from "./block"
+import Observable from "../common/observable"
+import PRNG from "../utils/prng"
+import ChunkGeneratorEvents from "../enums/chunk-generator-events"
 
 export type ChunkSize = {
     width: number
@@ -17,31 +20,72 @@ export type ChunkGeneratorConstructorOptions = {
 }
 
 export type ChunkGeneratorGenerateOptions = {
+    prng: PRNG
     size: ChunkSize
 }
 
-class ChunkGenerator {
+export type ChunkGeneratorGenerateReturnType = {
+    data: ChunkData
+    generationTime: number
+}
+
+class ChunkGenerator extends Observable {
+    public readonly blockGenerator: BlockGenerator
+
     public constructor({
         blockGenerator
     }: ChunkGeneratorConstructorOptions) {
+        super()
 
+        this.blockGenerator = blockGenerator
     }
 
     public generate({
+        prng,
         size
-    }: ChunkGeneratorGenerateOptions): ChunkData {
+    }: ChunkGeneratorGenerateOptions): ChunkGeneratorGenerateReturnType {
+        const startTime = Date.now()
+
+        this.notifyAll(ChunkGeneratorEvents.START, { startTime })
+
         const blocks: BlockData[] = []
 
-        for (let i = 0; i < size.width; i++) {
-            for (let j = 0; j < size.height; j++) {
-                const block = this.blo
-            }
+        this.notifyAll(ChunkGeneratorEvents.BLOCKS_GENERATION_STARTING)
+
+        for (let i = 0; i < size.width * size.height; i++) {
+            const layer = Math.floor(i / size.width)
+
+            const { data: block } = this.blockGenerator.generate({
+                prng: prng,
+                layer: layer,
+                context: [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            })
+
+            blocks.push(block)
         }
 
-        return {
+        this.notifyAll(ChunkGeneratorEvents.BLOCKS_GENERATION_FINISHING)
+
+        const endTime = Date.now()
+        const generationTime = endTime - startTime
+
+        this.notifyAll(ChunkGeneratorEvents.END, { startTime, endTime, generationTime })
+
+        const data = {
             id: uuid(),
             blocks: blocks
         }
+
+        return { data, generationTime }
     }
 }
 

@@ -1,0 +1,9 @@
+enum WorldGeneratorEvents {
+    START = "START",
+    CHUNKS_GENERATION_STARTING = "CHUNKS_GENERATION_STARTING",
+    CHUNKS_GENERATION_FINISHING = "CHUNKS_GENERATION_FINISHING",
+    END = "END"
+}
+
+
+export default WorldGeneratorEvents

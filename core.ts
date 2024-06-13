@@ -21,6 +21,7 @@ class MarcuthCraftCore {
     }
 
     public static createDefault(): MarcuthCraftCore {
+        const worldHeight = 256
         const blockGenerator = new BlockGenerator({})
 
         const chunkGenerator = new ChunkGenerator({
@@ -29,7 +30,13 @@ class MarcuthCraftCore {
 
         const worldGenerator = new WorldGenerator({
             prngClass: PRNG,
-            chunkGenerator: chunkGenerator
+            chunkGenerator: chunkGenerator,
+            generationConfig: {
+                chunkSize: {
+                    width: 16,
+                    height: worldHeight
+                }
+            }
         })
 
         const instance = new MarcuthCraftCore({

@@ -2,6 +2,8 @@ import { v4 as uuid } from "uuid"
 
 import ChunkGenerator, { ChunkData } from "./chunk"
 import PRNG from "../utils/prng"
+import Observable from "../common/observable"
+import WorldGeneratorEvents from "../enums/world-generator-events"
 
 export type WorldDataSeed = {
     original: string | number
@@ -34,16 +36,23 @@ export type WorldGeneratorGenerateOptions = {
     length: number
 }
 
-class WorldGenerator {
-    protected prngClass: typeof PRNG
-    protected chunkGenerator: ChunkGenerator
-    protected generationConfig: WorldGenerationConfig
+export type WorldGeneratorGenerateReturnType = {
+    data: WorldData
+    generationTime: number
+}
+
+class WorldGenerator extends Observable {
+    protected readonly prngClass: typeof PRNG
+    protected readonly chunkGenerator: ChunkGenerator
+    protected readonly generationConfig: WorldGenerationConfig
 
     public constructor({
         prngClass,
         chunkGenerator,
         generationConfig
     }: WorldGeneratorConstructorOptions) {
+        super()
+
         this.prngClass = prngClass
         this.chunkGenerator = chunkGenerator
         this.generationConfig = generationConfig
@@ -52,19 +61,33 @@ class WorldGenerator {
     public generate({
         seed,
         length
-    }: WorldGeneratorGenerateOptions): WorldData {
+    }: WorldGeneratorGenerateOptions): WorldGeneratorGenerateReturnType {
+        const startTime = Date.now()
+
+        this.notifyAll(WorldGeneratorEvents.START, { startTime })
+
         const prng = new this.prngClass(seed)
         const chunks: ChunkData[] = []
 
+        this.notifyAll(WorldGeneratorEvents.CHUNKS_GENERATION_STARTING)
+
         for (let i = 0; i < length; i++) {
-            const chunk = this.chunkGenerator.generate({
+            const { data: chunk } = this.chunkGenerator.generate({
+                prng: prng,
                 size: this.generationConfig.chunkSize
             })
 
             chunks.push(chunk)
         }
 
-        return {
+        this.notifyAll(WorldGeneratorEvents.CHUNKS_GENERATION_FINISHING)
+
+        const endTime = Date.now()
+        const generationTime = endTime - startTime
+
+        this.notifyAll(WorldGeneratorEvents.END, { startTime, endTime, generationTime })
+
+        const data = {
             id: uuid(),
             seed: {
                 original: seed,
@@ -72,6 +95,8 @@ class WorldGenerator {
             },
             chunks: chunks
         }
+
+        return { data, generationTime }
     }
 }
 
