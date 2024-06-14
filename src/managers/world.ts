@@ -1,27 +1,49 @@
 import { WorldData } from "../generators/world"
+import WorldClockManager, { WorldClockData } from "./world-clock"
 import Observable from "../common/observable"
 import { EntityData } from "./entity"
 
 export type WorldManagerConstructorOptions = {
+    tickIntervalTime: number
+    worldClockManagerClass: typeof WorldClockManager
+}
+
+export type WorldManagerExecuteOptions = {
     data: WorldData
-    entities: EntityData[]
+    clockData: WorldClockData
+    entitiesData: EntityData[]
 }
 
 class WorldManager extends Observable {
-    protected data: WorldData
-    protected entities: EntityData[]
+    private readonly tickIntervalTime: number
+    private readonly worldClockManagerClass: typeof WorldClockManager
 
     public constructor({
-        data,
-        entities
+        tickIntervalTime,
+        worldClockManagerClass
     }: WorldManagerConstructorOptions) {
         super()
 
-        this.data = data
-        this.entities = entities
+        this.tickIntervalTime = tickIntervalTime
+        this.worldClockManagerClass = worldClockManagerClass
     }
 
+    public execute({
+        clockData,
+        data,
+        entitiesData
+    }: WorldManagerExecuteOptions) {
+        const worldClockManager = new this.worldClockManagerClass({
+            data: clockData,
+            tickIntervalTime: this.tickIntervalTime
+        })
 
+        worldClockManager.start()
+
+        return {
+            worldClockManager
+        }
+    }
 }
 
 export default WorldManager

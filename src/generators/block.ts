@@ -1,12 +1,17 @@
 import { v4 as uuid } from "uuid"
-import PRNG from "../utils/prng"
+
+import BlockGeneratorEvents from "../enums/block-generator-events"
 import Observable from "../common/observable"
-import BlockGeneratorEvents from "../enums/block-generation-events"
+import PRNG from "../utils/prng"
+
+export type BlockDataState = {
+    liquidLevel?: number | "source"
+}
 
 export type BlockData = {
     id: string
     type: string
-    state: any
+    state?: BlockDataState
 }
 
 export type BlockDataOrNull = BlockData | null
@@ -73,8 +78,7 @@ class BlockGenerator extends Observable {
 
         const data = {
             id: uuid(),
-            type: blockType,
-            state: {}
+            type: blockType
         }
 
         return { data, generationTime }
