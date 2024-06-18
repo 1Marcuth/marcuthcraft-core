@@ -1,9 +1,9 @@
 {
   "name": "marcuthcraft-core",
   "declaration": "./dist/index.d.ts",
-  "version": "1.0.0",
+  "version": "0.5.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "dev": "ts-node index.ts",
     "build": "tsc"

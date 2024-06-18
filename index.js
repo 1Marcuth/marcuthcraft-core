@@ -1,1 +1,0 @@
-const MarcuthCraftCore = require("./")
