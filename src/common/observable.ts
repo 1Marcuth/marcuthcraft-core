@@ -1,10 +1,14 @@
-export type ObserverSync = (event: string, ...args: any[]) => any
-export type ObserverAsync = (event: string, ...args: any[]) => Promise<any>
+export type ObserverSync = (event: string, data: any) => any
+export type ObserverAsync = (event: string, data: any) => Promise<any>
 export type Observer = ObserverSync | ObserverAsync
+
+export type SpecializedObserverSync = (data: any) => any
+export type SpecializedObserverAsync = (data: any) => Promise<any>
+export type SpecializedObserver = SpecializedObserverSync | SpecializedObserverAsync
 
 class Observable {
     protected readonly observers: Observer[]
-    protected readonly specializedObservers: [string, Observer][]
+    protected readonly specializedObservers: [string, SpecializedObserver][]
 
     public constructor() {
         this.observers = []
@@ -22,12 +26,12 @@ class Observable {
 
         this.specializedObservers.forEach(([ observerEvent, observer ]) => {
             if (event === observerEvent) {
-                observer(observerEvent)
+                observer(data)
             }
         })
     }
 
-    public on(event: string, observer: Observer): void {
+    public on(event: string, observer: SpecializedObserver): void {
         this.specializedObservers.push([ event, observer ])
     }
 }

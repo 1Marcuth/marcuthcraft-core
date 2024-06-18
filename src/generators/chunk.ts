@@ -1,14 +1,10 @@
 import { v4 as uuid } from "uuid"
 
+import ChunkGeneratorEvents from "../enums/chunk-generator-events"
 import BlockGenerator, { BlockData } from "./block"
+import { ChunkSize } from "../default-configs/generation"
 import Observable from "../common/observable"
 import PRNG from "../utils/prng"
-import ChunkGeneratorEvents from "../enums/chunk-generator-events"
-
-export type ChunkSize = {
-    width: number
-    height: number
-}
 
 export type ChunkData = {
     id: string

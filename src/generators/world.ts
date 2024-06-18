@@ -1,9 +1,10 @@
 import { v4 as uuid } from "uuid"
 
-import ChunkGenerator, { ChunkData } from "./chunk"
-import PRNG from "../utils/prng"
-import Observable from "../common/observable"
 import WorldGeneratorEvents from "../enums/world-generator-events"
+import { GenerationConfig } from "../default-configs/generation"
+import ChunkGenerator, { ChunkData } from "./chunk"
+import Observable from "../common/observable"
+import PRNG from "../utils/prng"
 
 export type WorldDataSeed = {
     original: string | number
@@ -16,19 +17,10 @@ export type WorldData = {
     chunks: ChunkData[]
 }
 
-export type WorldGenerationConfigChunkSize = {
-    width: number
-    height: number
-}
-
-export type WorldGenerationConfig = {
-    chunkSize: WorldGenerationConfigChunkSize
-}
-
 export type WorldGeneratorConstructorOptions = {
     prngClass: typeof PRNG
     chunkGenerator: ChunkGenerator
-    generationConfig: WorldGenerationConfig
+    generationConfig: GenerationConfig
 }
 
 export type WorldGeneratorGenerateOptions = {
@@ -44,7 +36,7 @@ export type WorldGeneratorGenerateReturnType = {
 class WorldGenerator extends Observable {
     protected readonly prngClass: typeof PRNG
     protected readonly chunkGenerator: ChunkGenerator
-    protected readonly generationConfig: WorldGenerationConfig
+    protected readonly generationConfig: GenerationConfig
 
     public constructor({
         prngClass,

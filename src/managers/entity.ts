@@ -6,16 +6,16 @@ export type EntityData = {
     position: Vector2
 }
 
-export type EntityConstructorOptions = {
+export type EntityManagerConstructorOptions = {
     data: EntityData
 }
 
-class Entity extends Observable {
+class EntityManager extends Observable {
     protected data: EntityData
 
     public constructor({
         data
-    }: EntityConstructorOptions) {
+    }: EntityManagerConstructorOptions) {
         super()
         
         this.data = data
@@ -32,8 +32,8 @@ class Entity extends Observable {
         )
     }
 
-    public clone(): Entity {
-        return new Entity({
+    public clone(): EntityManager {
+        return new EntityManager({
             data: {
                 type: this.data.type,
                 position: new Vector2(this.data.position.x, this.data.position.y)
@@ -44,6 +44,10 @@ class Entity extends Observable {
     public destroy(): void {
         
     }
+
+    public export(): EntityData {
+        return {...this.data}
+    }
 }
 
-export default Entity
+export default EntityManager
