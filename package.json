@@ -1,9 +1,9 @@
 {
   "name": "marcuthcraft-core",
-  "declaration": "./dist/index.d.ts",
-  "version": "0.5.1",
+  "version": "0.5.3",
   "description": "",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "ts-node example.ts",
     "build": "tsc && webpack"

@@ -16,10 +16,10 @@ module.exports = {
         extensions: [".ts", ".js"],
     },
     output: {
-        filename: "bundle.js",
+        filename: "index.js",
         path: path.resolve(__dirname, "dist"),
-        library: "MyLibrary",
+        library: "MarcuthCraftCore",
         libraryTarget: "umd",
         globalObject: "this",
-    },
+    }
 }
