@@ -1,21 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "declaration": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "target": "ES2018",
+    "module": "CommonJS",
+    "outDir": "./dist/",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "lib": ["dom", "es2015"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "*.ts",
-    "*.js"
-  ]
+  "include": ["src/**/*"]
 }
